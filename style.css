@@ -81,7 +81,7 @@ html.lock{overflow:hidden}
 .drawer-close{position:absolute;top:6px;right:var(--gut)}
 
 /* hero */
-.hero{display:grid;grid-template-columns:42% 58%;height:clamp(560px,calc(100svh - var(--hh)),940px)}
+.hero{display:grid;grid-template-columns:42% 58%;height:calc(100vh - var(--hh));height:calc(100svh - var(--hh));min-height:500px}
 .hero-panel{display:flex;flex-direction:column;justify-content:space-between;padding:clamp(40px,5vw,72px) clamp(32px,5vw,84px)}
 .hero-panel .wm{width:min(100%,420px);height:auto;margin-left:calc(min(100%,420px) * -.0229)}
 .hero-panel h1{color:var(--on-m);margin-bottom:36px}
@@ -89,7 +89,7 @@ html.lock{overflow:hidden}
 .hero-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%}
 
 /* night band */
-.band{position:relative;height:clamp(520px,86svh,840px);display:flex;align-items:flex-end;color:#FFF8EE;overflow:hidden}
+.band{position:relative;height:clamp(520px,86svh,840px);display:flex;align-items:flex-end;color:#FFF8EE;overflow:hidden;background:#1b2120}
 .band>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 28%}
 .band::after{content:"";position:absolute;inset:0;background:rgba(10,16,15,.3)}
 .band .wrap{position:relative;z-index:1;padding-bottom:clamp(40px,6vw,88px)}
@@ -295,12 +295,12 @@ html.lock{overflow:hidden}
   .nav,.hdr-r .btn-book{display:none}
   .burger{display:block}
   .brand,.brand img{width:128px}
-  .hero{display:flex;flex-direction:column;height:auto}
-  .hero-photo{order:-1;height:max(340px,50svh);flex:none}
-  .hero-photo img{object-position:50% 22%}
-  .hero-panel{gap:28px;padding:36px var(--gut) 44px}
-  .hero-panel .wm{width:min(78%,290px)}
-  .hero-panel h1{margin-bottom:28px}
+  .hero{display:flex;flex-direction:column;height:calc(100vh - var(--hh));height:calc(100svh - var(--hh));min-height:0}
+  .hero-photo{order:-1;flex:1 1 0;min-height:120px}
+  .hero-photo img{object-position:50% 34%}
+  .hero-panel{flex:none;justify-content:flex-start;gap:clamp(12px,3svh,28px);padding:clamp(18px,4svh,36px) var(--gut) clamp(20px,5svh,44px)}
+  .hero-panel .wm{width:min(78%,290px,40svh);margin-left:calc(min(78%,290px,40svh) * -.0229)}
+  .hero-panel h1{margin-bottom:clamp(12px,2.6svh,26px);font-size:clamp(2.25rem,min(11.5vw,6.2svh),3.4rem)}
   .bridge-grid,.teaser-grid,.soma-grid,.book-grid,.soma-b{grid-template-columns:minmax(0,1fr)}
   .dome{max-width:520px}
   .book-photo{position:static;max-width:520px;aspect-ratio:4/3}

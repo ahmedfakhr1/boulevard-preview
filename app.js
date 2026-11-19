@@ -6,12 +6,22 @@
   var $$ = function (s, c) { return Array.prototype.slice.call((c || d).querySelectorAll(s)); };
   var hasIO = 'IntersectionObserver' in window;
 
+  /* ---------- hold the page until the first screen is ready, then fade in once ---------- */
+  (function () {
+    var rel = window.__rel || function () { root.classList.remove('fl'); };
+    var imgs = $$('.hero img, .phead img, .card-lvd img, .hdr .brand img');
+    var waits = imgs.map(function (i) { return (i.decode ? i.decode() : Promise.resolve()).catch(function () {}); });
+    waits.push(document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve());
+    ['400 1em "Poiret One"', '400 1em Jost', '500 1em Jost', '600 1em Jost'].forEach(function (f) { try { waits.push(document.fonts.load(f)); } catch (e) {} });
+    Promise.all(waits).then(rel, rel);
+  })();
+
   /* ---------- sections fade and rise once ---------- */
   var rv = $$('.rv');
   if (hasIO && !reduce) {
     var io = new IntersectionObserver(function (es) {
       es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
-    }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
+    }, { threshold: 0.01, rootMargin: '0px 0px 15% 0px' });
     rv.forEach(function (el) { io.observe(el); });
   } else {
     rv.forEach(function (el) { el.classList.add('in'); });
