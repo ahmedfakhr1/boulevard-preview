@@ -6,14 +6,33 @@
   var $$ = function (s, c) { return Array.prototype.slice.call((c || d).querySelectorAll(s)); };
   var hasIO = 'IntersectionObserver' in window;
 
-  /* ---------- hold the page until the first screen is ready, then fade in once ---------- */
+  /* ---------- first screen: opening veil on the first visit, plain hold after ---------- */
   (function () {
     var rel = window.__rel || function () { root.classList.remove('fl'); };
+    var veil = $('#veil'), veiled = root.classList.contains('veiled') && veil;
     var imgs = $$('.hero img, .phead img, .card-lvd img, .hdr .brand img');
-    var waits = imgs.map(function (i) { return (i.decode ? i.decode() : Promise.resolve()).catch(function () {}); });
-    waits.push(document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve());
-    ['400 1em "Poiret One"', '400 1em Jost', '500 1em Jost', '600 1em Jost'].forEach(function (f) { try { waits.push(document.fonts.load(f)); } catch (e) {} });
-    Promise.all(waits).then(rel, rel);
+    var items = imgs.map(function (i) { return (i.decode ? i.decode() : Promise.resolve()).catch(function () {}); });
+    var fonts = [];
+    if (document.fonts) {
+      if (document.fonts.ready) fonts.push(document.fonts.ready);
+      ['400 1em "Poiret One"', '400 1em Jost', '500 1em Jost', '600 1em Jost'].forEach(function (f) { try { fonts.push(document.fonts.load(f)); } catch (e) {} });
+    }
+    items.push(Promise.all(fonts).catch(function () {}));
+    var total = items.length, done = 0, bar = veiled ? $('.veil-bar i', veil) : null;
+    var tick = function () { done++; if (bar) bar.style.transform = 'scaleX(' + Math.min(1, done / total) + ')'; };
+    items = items.map(function (p) { return p.then(tick, tick); });
+    if (!veiled) { Promise.all(items).then(rel, rel); return; }
+    var t0 = performance.now(), lifted = false;
+    var finish = function () { root.classList.remove('veiled'); };
+    var lift = function () {
+      if (lifted) return; lifted = true;
+      if (reduce) { finish(); return; }
+      veil.classList.add('lift'); setTimeout(finish, 800);
+    };
+    Promise.all(items).then(function () { setTimeout(lift, Math.max(260, 1200 - (performance.now() - t0))); });
+    setTimeout(lift, 2500);
+    veil.addEventListener('click', lift);
+    d.addEventListener('keydown', lift, { once: true });
   })();
 
   /* ---------- sections fade and rise once ---------- */
